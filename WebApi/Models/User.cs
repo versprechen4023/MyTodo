@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Text.Json.Serialization;
 
 namespace WebApi.Models
 {
@@ -15,14 +16,14 @@ namespace WebApi.Models
         /// <summary>
         /// 유저 이름(계정 아이디)
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "사용자 ID를 입력해주십시오")]
         public string UserName { get; set; }
 
         /// <summary>
         /// 유저 비밀번호
         /// </summary>
-        [Required]
-        public string Password { get; set; }
+        [Required(ErrorMessage = "사용자 비밀번호를 입력해주십시오")]
+		public string Password { get; set; }
 
         /// <summary>
         /// JWT 인가의 리프레시 토큰
@@ -34,6 +35,7 @@ namespace WebApi.Models
         /// </summary>
         public DateTime? RefreshTokenExpiry { get; set; }
 
+        [JsonIgnore]
         /// <summary>
         /// 권한 번호(외래키)
         /// </summary>
