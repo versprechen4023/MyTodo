@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{2D88DCD3-0089-41C5-BF5B-BF9804E3A01B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTodo", "MyTodo\MyTodo.csproj", "{2BACA01E-3B0E-401E-9C74-5E0914F6C82F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTodo", "MyTodo\MyTodo.csproj", "{2BACA01E-3B0E-401E-9C74-5E0914F6C82F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

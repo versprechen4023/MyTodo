@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace WebApi.Models
 {
@@ -36,8 +37,10 @@ namespace WebApi.Models
         /// <summary>
         /// 유저 번호(외래키)
         /// </summary>
+        [JsonIgnore]
         public int? UserId { get; set; }
 
+        [JsonIgnore]
         [ForeignKey("UserId")]
         public virtual User? User { get; set; }
     }

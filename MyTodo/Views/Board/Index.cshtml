@@ -1,0 +1,57 @@
+﻿<div class="board-container">
+	<div class ="board">
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th>번호</th>
+					<th>제목</th>
+					<th>작성자</th>
+					<th>작성일자</th>
+					<th>조회수</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach(var board in Model.Items)
+				{
+					<tr onclick="location.href='@Url.Action("Detail", "Board", new { boardNo = board.BoardNo})'">
+						<td>@board.BoardNo</td>
+						<td>@board.BoardTitle</td>
+						<td>@board.UserName</td>
+						<td>@board.BoardDate.ToString("yyyy-MM-dd")</td>
+						<td>@board.BoardCount</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="d-flex justify-content-end">
+			<a class="btn btn-primary float-end" asp-controller="Board" asp-action="Put">글쓰기</a>
+		</div>
+		<div class="board-paging">
+			<ul class="pagination justify-content-center">
+				@if (Model.StartPage > Model.PageBlock)
+				{
+					<li class="page-item">
+						<a class="page-link" href="/board/Index?pageNumber=@(Model.StartPage - Model.PageBlock)" aria-label="Previous">
+							<span aria-hidden="true">&lt;</span>
+						</a>
+					</li>
+				}
+
+				@for (int i = Model.StartPage; i <= Model.EndPage; i++)
+				{
+					<li class="page-item @(i == Model.PageNumber ? "active" : "")">
+						<a class="page-link" href="/board/Index?pageNumber=@i">@i</a>
+					</li>
+				}
+
+				@if (Model.EndPage < Model.PageCount)
+				{
+					<li class="page-item">
+						<a class="page-link" href="/board/Index?pageNumber=@(Model.StartPage + Model.PageBlock)" aria-label="Next">
+							<span aria-hidden="true">&gt;</span>
+						</a>
+					</li>
+				}
+		</div>
+	</div>
+</div>

@@ -41,6 +41,7 @@ namespace WebApi.Models
         /// </summary>
         public int? RoleId { get; set; }
 
+        [JsonIgnore]
         [ForeignKey("RoleId")]
         public virtual Role? Role { get; set; }
     }
