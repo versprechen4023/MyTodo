@@ -9,5 +9,11 @@ namespace MyTodo.Utils
             var response = await _httpClient.PostAsJsonAsync("/api/auth/register", model);
             return response;
         }
+
+        public async Task<HttpResponseMessage> Login(User model)
+        {
+            var response = await _httpClient.PostAsJsonAsync("/api/auth/login", model);
+            return response;
+        }
     }
 }

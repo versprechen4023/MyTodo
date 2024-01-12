@@ -59,6 +59,50 @@ namespace WebApi.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] User model)
+        {
+            _logger.LogWarning("로그인 실행");
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = await _dbContext.Users.Include(u => u.Role).SingleOrDefaultAsync(u => u.UserName == model.UserName);
+
+                    if(user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+                    {
+                        string accessToken = GenerateAccessToken(user);
+
+                        if(string.IsNullOrEmpty(accessToken) == true)
+                        {
+                            return BadRequest(new { message = "인증 토큰 생성에 실패했습니다" });
+                        }
+
+                        string refreshToken = GenerateRefreshToken();
+
+                        user.RefreshToken = refreshToken;
+                        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+                        await _dbContext.SaveChangesAsync();
+
+                        return Ok(new { Token = accessToken, RefreshToken = refreshToken });
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "아이디 혹은 비밀번호가 일치하지 않습니다" });
+                    }
+                }
+                return BadRequest(new { message = "로그인 중에 문제가 발생했습니다" });
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(new { message = "로그인 중에 문제가 발생했습니다" });
+
+            }
+        }
+
         // 리프레시 토큰 발급 메서드
         private string GenerateRefreshToken()
         {
