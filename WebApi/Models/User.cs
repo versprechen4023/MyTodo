@@ -17,6 +17,9 @@ namespace WebApi.Models
         /// 유저 이름(계정 아이디)
         /// </summary>
         [Required(ErrorMessage = "사용자 ID를 입력해주십시오")]
+        [MaxLength(25, ErrorMessage = "최대 25글자 까지만 가능합니다")]
+        [RegularExpression("^[A-Za-z0-9]+$", ErrorMessage = "영문자와 숫자만 허용됩니다.")]
+
         public string UserName { get; set; }
 
         /// <summary>

@@ -10,9 +10,17 @@ namespace WebApi.Models
         public DbSet<Board> Boards { get; set; }
         public DbSet<Todo> Todos { get; set; }
 
-        public DBContext(DbContextOptions<DBContext> options) : base(options)
-        {
+        public DBContext(DbContextOptions<DBContext> options) : base(options) { }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            // 권한쪽 기본값 데이터 삽입
+            builder.Entity<Role>()
+            .HasData
+            (
+             new Role { Id = 1, Name = "admin" },
+             new Role { Id = 2, Name = "user" }
+            );
         }
     }
 }

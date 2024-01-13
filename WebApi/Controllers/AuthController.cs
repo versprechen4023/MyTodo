@@ -43,6 +43,7 @@ namespace WebApi.Controllers
                 {
                     // 유저 권한을 가져옴 DB에 권한 내역없다면 NULL로 삽입되므로 미리 INSERT 필요
                     // 기본은 1 Admin, 2 User
+                    // DB컨텍스트 설정에서 자동 입력값 추가 마이그레이션시 자동삽입
                     Role role = await _dbContext.Roles.SingleOrDefaultAsync(r => r.Id == 1);
 
                     var user = new User { UserName = model.UserName, Password = BCrypt.Net.BCrypt.HashPassword(model.Password), Role = role };
