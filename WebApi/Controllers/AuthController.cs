@@ -103,8 +103,39 @@ namespace WebApi.Controllers
             }
         }
 
-        // 리프레시 토큰 발급 메서드
-        private string GenerateRefreshToken()
+		[HttpPost("refresh")]
+		public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+		{
+			_logger.LogWarning("리프레시 토큰 발급 실행");
+			try
+			{
+                var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiry > DateTime.UtcNow);
+
+                if(user != null)
+                {
+					string accessToken = GenerateAccessToken(user);
+
+					if (string.IsNullOrEmpty(accessToken) == true)
+					{
+						return BadRequest();
+					}
+
+					return Ok(new { Token = accessToken });
+                }
+                else
+                {
+                    // 로그인 정보 불일치시
+                    return BadRequest();
+                }
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex.Message);
+				return BadRequest(new { message = "인증 토큰 생성에 실패했습니다." });
+			}
+		}
+		// 리프레시 토큰 발급 메서드
+		private string GenerateRefreshToken()
         {
             return Guid.NewGuid().ToString();
         }
@@ -144,9 +175,7 @@ namespace WebApi.Controllers
             {
                 _logger.LogError(ex.Message);
                 return null;
-
             }
-
         }
     }
 }

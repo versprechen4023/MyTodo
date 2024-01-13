@@ -1,0 +1,27 @@
+﻿@model WebApi.Models.Board
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="put-board">
+            <div class="form-content">
+                <form method="post" asp-controller="Board" asp-action="Put">
+                    <div class="mb-3">
+                        <label class="col-sm-5 col-form-label">게시글 제목</label>
+                        <input type="text" class="form-control" asp-for="BoardTitle" placeholder="게시글 제목을 입력하십시오" />
+                        <span asp-validation-for="BoardTitle" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="col-sm-5 col-form-label">게시글 내용</label>
+                        <textarea class="form-control edit" asp-for="BoardContent" placeholder="게시글 내용을 입력하십시오"></textarea>
+                        <span asp-validation-for="BoardContent" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-success">글쓰기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

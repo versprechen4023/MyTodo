@@ -12,11 +12,19 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
+html{
   position: relative;
   min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+  min-height: 100vh;
+}
+
+.container {
+    padding-top: 2.751rem;
+}
+
+.card-body{
+    height : 50vh;
 }

@@ -1,0 +1,23 @@
+﻿<div class="container">
+	<div class="board-detail">
+		<div class="col-lg-10">
+			<div class="card">
+				<div class="card-header">
+					@Model.BoardTitle <br/>
+					@Model.BoardDate.ToString("yyyy-MM-dd")
+				</div>
+				<div class="card-body">
+					@Html.Raw(Model.BoardContent)
+				</div>
+			</div>
+			<div class="card-footer">
+				<a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록</a>
+				@if (Model.UserId == Model.Id)
+				{
+					<a class="btn btn-primary" asp-controller="Board" asp-action="Update" asp-route-boardNo="@Model.BoardNo">수정</a>
+					<button type="button" class="btn btn-danger" onclick="Delete('@Model.BoardNo')">삭제</button>
+				}
+			</div>
+		</div>
+	</div>
+</div>

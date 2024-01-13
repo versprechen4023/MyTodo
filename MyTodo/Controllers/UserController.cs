@@ -27,11 +27,12 @@ namespace MyTodo.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            ViewData["returnURL"] = TempData["returnURL"];
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(User model)
+        public async Task<IActionResult> Login(User model, string? returnURL)
         {
             try
             {
@@ -55,7 +56,14 @@ namespace MyTodo.Controllers
                         SameSite = SameSiteMode.Strict
                     });
 
-                    return RedirectToAction("Index", "Home");
+                    if (string.IsNullOrEmpty(returnURL))
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        return Redirect(returnURL);
+                    }
                 }
                 else
                 {

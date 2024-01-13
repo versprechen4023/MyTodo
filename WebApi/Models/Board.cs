@@ -37,7 +37,6 @@ namespace WebApi.Models
         /// <summary>
         /// 유저 번호(외래키)
         /// </summary>
-        [JsonIgnore]
         public int? UserId { get; set; }
 
         [JsonIgnore]

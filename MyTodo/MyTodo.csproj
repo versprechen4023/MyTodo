@@ -15,4 +15,8 @@
     <ProjectReference Include="..\WebApi\WebApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\upload\" />
+  </ItemGroup>
+
 </Project>

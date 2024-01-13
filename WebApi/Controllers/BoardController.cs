@@ -79,7 +79,35 @@ namespace WebApi.Controllers
                 _logger.LogError(ex.Message);
                 return BadRequest();
             }
- 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PutBoard(Board model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _dbContext.Boards.Add(model);
+                    if (await _dbContext.SaveChangesAsync() > 0)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest();
+            }
         }
     }
 }
