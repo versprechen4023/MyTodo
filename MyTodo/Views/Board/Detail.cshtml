@@ -21,3 +21,29 @@
 		</div>
 	</div>
 </div>
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	<script>
+		function Delete(boardNo) {
+			$.ajax({
+				url: "/board/delete/" + boardNo,
+				type: "Delete",
+				success: function (result) {
+					alert("삭제 되었습니다.");
+					location.href = "/board/Index"
+				},
+				error: function (xhr, status) {
+					if (xhr.status === 401) {
+						location.href = "/User/login"
+					}
+					else 
+					{
+						location.href = "/Error/Error500"
+					}
+				}
+			});
+		}
+	</script>
+}

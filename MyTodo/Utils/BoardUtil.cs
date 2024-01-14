@@ -22,5 +22,17 @@ namespace MyTodo.Utils
 			return response;
 		}
 
+        public async Task<HttpResponseMessage> DeleteBoard(int boardNo, int userId)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/board/{boardNo}/{userId}");
+            return response;
+        }
+
+        public async Task<HttpResponseMessage> UpdateBoard(Board model)
+        {
+            var response = await _httpClient.PutAsJsonAsync("/api/board", model);
+            return response;
+        }
+
 	}
 }

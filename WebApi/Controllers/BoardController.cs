@@ -46,7 +46,7 @@ namespace WebApi.Controllers
 
                 return Ok(boardList);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return BadRequest();
@@ -102,6 +102,58 @@ namespace WebApi.Controllers
                 {
                     return BadRequest();
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("{boardNo}/{userId}")]
+        public async Task<IActionResult> DeleteBoard(int boardNo, int userId)
+        {
+            try
+            {
+                var board = await _dbContext.Boards.FirstOrDefaultAsync(b => b.BoardNo == boardNo && b.UserId == userId);
+
+                if (board == null)
+                {
+                    return BadRequest();
+                }
+
+                _dbContext.Boards.Remove(board);
+
+                if (await _dbContext.SaveChangesAsync() > 0)
+                {
+                    return Ok();
+                }
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest();
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(Board model)
+        {
+            try
+            {
+                var detail = await _dbContext.Boards.FirstOrDefaultAsync(b => b.BoardNo == model.BoardNo && b.UserId == model.UserId);
+
+                detail.BoardTitle = model.BoardTitle;
+                detail.BoardContent = model.BoardContent;
+
+                if (await _dbContext.SaveChangesAsync() > 0)
+                {
+                    return Ok();
+                }
+
+                return BadRequest();
             }
             catch (Exception ex)
             {

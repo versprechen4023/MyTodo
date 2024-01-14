@@ -18,8 +18,8 @@ namespace WebApi.Models
             builder.Entity<Role>()
             .HasData
             (
-             new Role { Id = 1, Name = "admin" },
-             new Role { Id = 2, Name = "user" }
+             new Role { Id = 1, Name = "Admin" },
+             new Role { Id = 2, Name = "User" }
             );
         }
     }

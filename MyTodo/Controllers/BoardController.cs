@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyTodo.Utils;
+using Newtonsoft.Json.Linq;
 using System.Security.Cryptography.X509Certificates;
 using WebApi.Dtos;
 using WebApi.Models;
@@ -156,6 +157,128 @@ namespace MyTodo.Controllers
 				_logger.LogError(ex, "게시글 등록 실패");
                 return RedirectToAction("Error500", "Error");
             }
+		}
+
+        [HttpDelete("{BoardNo}")]
+        public async Task<IActionResult> Delete(int boardNo)
+        {
+            try
+            {
+                var token = _httpContextAccessor.HttpContext.Request.Cookies["AccessToken"];
+
+                // 로그인 유무 토큰 검증
+                if (_webAPIs.IsTokenExpired(token))
+                {
+                    if (!await _webAPIs.RefreshToken())
+                    {
+                        TempData["returnURL"] = _httpContextAccessor.HttpContext.Request.Headers["Referer"].ToString();
+
+                        return Unauthorized();
+                    }
+                }
+
+                // 토큰에서 유저 번호 추출
+                int userId = Int32.Parse(JwtDecoder.GetUserIdFromClaims(token));
+
+                // 헤더에 토큰 세팅
+                _webAPIs.SetAccessToken(token);
+
+                var response = await _webAPIs.DeleteBoard(boardNo, userId);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "게시글 삭제 실패");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("{boardNo}")]
+        public async Task<IActionResult> Update(int boardNo)
+        {
+            try
+            {
+                var token = _httpContextAccessor.HttpContext.Request.Cookies["AccessToken"];
+
+                // 로그인 유무 토큰 검증
+                if (_webAPIs.IsTokenExpired(token))
+                {
+                    if (!await _webAPIs.RefreshToken())
+                    {
+                        TempData["returnURL"] = _httpContextAccessor.HttpContext.Request.Headers["Referer"].ToString();
+
+                        return RedirectToAction("Login", "User");
+                    }
+                }
+
+                var response = await _webAPIs.GetBoardDetail(boardNo);
+
+                if(response.IsSuccessStatusCode)
+                {
+                    var detail = await response.Content.ReadFromJsonAsync<BoardDto>();
+                    return View(detail);
+                }
+                else
+                {
+                    return RedirectToAction("Error500", "Error");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "게시글 수정 페이지 진입 실패");
+                return RedirectToAction("Error500", "Error");
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(Board model)
+		{
+            try
+            {
+				var token = _httpContextAccessor.HttpContext.Request.Cookies["AccessToken"];
+
+				// 로그인 유무 토큰 검증
+				if (_webAPIs.IsTokenExpired(token))
+				{
+					if (!await _webAPIs.RefreshToken())
+					{
+						TempData["returnURL"] = _httpContextAccessor.HttpContext.Request.Headers["Referer"].ToString();
+
+						return Unauthorized();
+					}
+				}
+
+				// 토큰에서 유저 번호 추출
+				model.UserId = Int32.Parse(JwtDecoder.GetUserIdFromClaims(token));
+
+				// 헤더에 토큰 세팅
+				_webAPIs.SetAccessToken(token);
+
+                var response = await _webAPIs.UpdateBoard(model);
+                
+                if(response.IsSuccessStatusCode )
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+			}
+            catch(Exception ex)
+            {
+				_logger.LogError(ex, "게시글 수정 실패");
+				return BadRequest();
+			}
 		}
     }
 }

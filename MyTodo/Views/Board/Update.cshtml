@@ -1,0 +1,59 @@
+﻿@model WebApi.Dtos.BoardDto
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="put-board">
+            <div class="form-content">
+                <form id="boardUpdate">
+                    <input type="hidden" asp-for="BoardNo" />
+                    <div class="mb-3">
+                        <label class="col-sm-5 col-form-label">게시글 제목</label>
+                        <input type="text" class="form-control" asp-for="BoardTitle" placeholder="게시글 제목을 입력하십시오" />
+                        <span asp-validation-for="BoardTitle" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="col-sm-5 col-form-label">게시글 내용</label>
+                        <textarea class="form-control edit" asp-for="BoardContent" placeholder="게시글 내용을 입력하십시오"></textarea>
+                        <span asp-validation-for="BoardContent" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-success">수정</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	<script>
+		$("#boardUpdate").submit(function (event) {
+
+			event.preventDefault();
+
+			const formData = $(this).serialize();
+
+			$.ajax({
+				url: "/board/update/",
+				type: "Put",
+				data: formData,
+				success: function (result) {
+					alert("수정 되었습니다.");
+					location.href = "/board/Index"
+				},
+				error: function (xhr, status) {
+					if (xhr.status === 401) {
+						location.href = "/User/login"
+					}
+					else {
+						location.href = "/Error/Error500"
+					}
+				}
+			});
+		});
+	</script>
+}
