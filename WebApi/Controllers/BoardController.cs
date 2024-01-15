@@ -12,6 +12,7 @@ namespace WebApi.Controllers
     [ApiController]
     public class BoardController : ControllerBase
     {
+        // 의존성 주입 로거, DB컨텍스트
         private readonly ILogger<BoardController> _logger;
         private readonly DBContext _dbContext;
 
@@ -26,6 +27,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> GetBoardList(int pageNumber, int pageSize, int pageBlock)
         {
             _logger.LogWarning("게시글 가져오기 실행");
+
             try
             {
                 // SELECT b.boardNo, b.BoardTitle, b.BoardContent, b.BoardDate, u.UserName
@@ -88,7 +90,7 @@ namespace WebApi.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _dbContext.Boards.Add(model);
+                    await _dbContext.Boards.AddAsync(model);
                     if (await _dbContext.SaveChangesAsync() > 0)
                     {
                         return Ok();
@@ -139,14 +141,19 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(Board model)
+        public async Task<IActionResult> UpdateBoard(Board model)
         {
             try
             {
-                var detail = await _dbContext.Boards.FirstOrDefaultAsync(b => b.BoardNo == model.BoardNo && b.UserId == model.UserId);
+                var board = await _dbContext.Boards.FirstOrDefaultAsync(b => b.BoardNo == model.BoardNo && b.UserId == model.UserId);
 
-                detail.BoardTitle = model.BoardTitle;
-                detail.BoardContent = model.BoardContent;
+                if (board == null)
+                {
+                    return BadRequest();
+                }
+
+                board.BoardTitle = model.BoardTitle;
+                board.BoardContent = model.BoardContent;
 
                 if (await _dbContext.SaveChangesAsync() > 0)
                 {

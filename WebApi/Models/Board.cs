@@ -21,8 +21,7 @@ namespace WebApi.Models
         /// <summary>
         /// 게시글 내용
         /// </summary>
-        [Required]
-        public string BoardContent { get; set; }
+        public string? BoardContent { get; set; }
 
         /// <summary>
         /// 게시글 조회수

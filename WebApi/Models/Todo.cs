@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace WebApi.Models
 {
@@ -14,7 +15,7 @@ namespace WebApi.Models
         /// <summary>
         /// 할일 내용
         /// </summary>
-        public string TodoContent { get; set; }
+        public string? TodoContent { get; set; }
 
         /// <summary>
         /// 할일 상태(디폴트 0; 0 = 미완료, 1 = 완료)
@@ -25,6 +26,8 @@ namespace WebApi.Models
         /// 유저 번호(외래키)
         /// </summary>
         public int? UserId { get; set; }
+
+        [JsonIgnore]
         [ForeignKey("UserId")]
         public virtual User? User { get; set; }
     }

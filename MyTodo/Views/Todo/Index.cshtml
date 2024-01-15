@@ -1,0 +1,51 @@
+﻿<section class="vh-100">
+  <div class="container py-5">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-12">
+        <div class="card " id="list1" style="border-radius: .75rem; background-color: #eff1f2;">
+          <div class="card-body py-4 px-4 px-md-5 flex-grow-1" id="todo-card">
+            <p class="h3 text-center" id="nowTime">
+
+            </p>
+            <p class="h4 text-center mt-3 mb-4 pb-3" id="nowDate">
+
+            </p>
+            <p class="text-center" id="recode-Result">
+              
+            </p>
+
+            <div class="pb-2">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex flex-row align-items-center">
+                    <input type="text" class="form-control form-control-lg me-3" id="todo-input"
+                      placeholder="할 일을 추가하세요">
+                    <div class="todo-button">
+                      <button type="button" class="btn btn-primary" onclick="saveTodo()">추가</button>
+                      <button type="button" class="btn btn-primary" onclick="startRecord()">🛑</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            @* 선 나눔 *@
+            <hr class="my-4">
+
+            <div id="todoContent">
+
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+    <script src="~/js/todo.js"></script>
+}

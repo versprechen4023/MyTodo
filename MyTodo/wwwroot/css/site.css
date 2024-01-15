@@ -18,13 +18,24 @@ html{
 }
 
 body {
-  min-height: 100vh;
+    min-height: 100vh;
+    height: 100vh;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .container {
     padding-top: 2.751rem;
 }
 
-.card-body{
-    height : 50vh;
+.todo-button{
+    margin-left:20px;
+    width:150px;
+}
+#todo-card {
+    height: 700px;
 }
