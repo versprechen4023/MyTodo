@@ -34,6 +34,11 @@ namespace WebApi.Models
         public DateTime? BoardDate { get; set; } = DateTime.Now;
 
         /// <summary>
+        /// Reply 테이블 관계 선언
+        /// </summary>
+        public ICollection<Reply>? Replies { get; set; }
+
+        /// <summary>
         /// 유저 번호(외래키)
         /// </summary>
         public int? UserId { get; set; }

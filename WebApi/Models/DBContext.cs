@@ -9,6 +9,7 @@ namespace WebApi.Models
         public DbSet<Role> Roles { get; set; }
         public DbSet<Board> Boards { get; set; }
         public DbSet<Todo> Todos { get; set; }
+        public DbSet<Reply> Replys { get; set; }
 
         public DBContext(DbContextOptions<DBContext> options) : base(options) { }
 
