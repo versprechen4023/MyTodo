@@ -61,5 +61,46 @@ namespace MyTodo.Controllers
 				return BadRequest();
 			}
 		}
+
+        [HttpDelete("{ReplyNo}")]
+        public async Task<IActionResult> Delete(int replyNo)
+        {
+            try
+            {
+				var token = _httpContextAccessor.HttpContext.Request.Cookies["AccessToken"];
+
+				// 로그인 유무 토큰 검증
+				if (_webAPIs.IsTokenExpired(token))
+				{
+					if (!await _webAPIs.RefreshToken())
+					{
+						TempData["returnURL"] = _httpContextAccessor.HttpContext.Request.Headers["Referer"].ToString();
+
+						return Unauthorized();
+					}
+				}
+
+				// 토큰에서 유저 번호 추출
+				int userId = Int32.Parse(JwtDecoder.GetUserIdFromClaims(token));
+				// 헤더에 토큰 세팅
+				_webAPIs.SetAccessToken(token);
+
+				var response = await _webAPIs.DeleteReply(replyNo, userId);
+
+				if (response.IsSuccessStatusCode)
+				{
+					return Ok();
+				}
+				else
+				{
+					return BadRequest();
+				}
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "댓글 삭제 실패");
+				return BadRequest();
+			}
+		}
     }
 }

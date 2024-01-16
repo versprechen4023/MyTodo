@@ -17,10 +17,10 @@ namespace WebApi.Models
 
         [JsonIgnore]
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public virtual User? User { get; set; }
         [JsonIgnore]
         [ForeignKey("BoardNo")]
-        public virtual Board Board { get; set; }
+        public virtual Board? Board { get; set; }
 
 
     }

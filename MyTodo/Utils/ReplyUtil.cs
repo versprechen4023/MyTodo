@@ -1,4 +1,5 @@
-﻿using WebApi.Models;
+﻿using WebApi.Dtos;
+using WebApi.Models;
 
 namespace MyTodo.Utils
 {
@@ -9,5 +10,11 @@ namespace MyTodo.Utils
             var response = await _httpClient.PostAsJsonAsync("/api/reply/", model);
             return response;
         }
+
+        public async Task<HttpResponseMessage> DeleteReply(int replyNo, int userId)
+        {
+			var response = await _httpClient.DeleteAsync($"/api/reply/{replyNo}/{userId}");
+			return response;
+		}
     }
 }

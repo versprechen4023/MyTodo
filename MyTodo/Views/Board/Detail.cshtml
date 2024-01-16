@@ -4,22 +4,41 @@
 			<div class="card">
 				<div class="card-header">
 					@Model.BoardTitle <br/>
-					@Model.BoardDate.ToString("yyyy-MM-dd")
+					<p>@Model.UserName || @Model.BoardDate.ToString("yyyy-MM-dd")</p>
 				</div>
 				<div class="card-body" style="min-height:700px;">
 					@Html.Raw(Model.BoardContent)
 				</div>
 			</div>
 			<div class="card-footer">
-				<div id="reply">
-					<p>test</p>
-					<button type="button" class="btn btn-danger btn-sm delete-comment" data-comment-id="1">삭제</button>
-				</div>
+				@foreach (var reply in Model.Replies)
+				{
+					<div id="reply">
+						<div class="row">
+							<div class="col d-flex align-items-center">
+								<p class="mt-3">@reply.UserName</p>
+							</div>
+							<div class="col d-flex align-items-center">
+								<p class="mt-3">@reply.ReplyContent</p>
+							</div>
+							<div class="col d-flex align-items-center justify-content-end">
+								<p class="mt-3">@reply.ReplyDate.ToString("yyyy-MM-dd")</p>
+								@if (reply.UserId == Model.Id)
+								{
+									<div class="reply-button ms-2">
+										<button type="button" class="btn btn-danger btn-sm delete-comment" onclick="deleteReply('@reply.ReplyNo')">삭제</button>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+					<hr class="my-4" />
+				}
 			</div>
 		</div>
 	</div>
 
-	<hr class="my-4">
+	<hr class="my-4" />
 
 </div>
 
@@ -31,7 +50,7 @@
 					<div class="d-flex flex-row align-items-center">
 						<input type="text" class="form-control form-control-lg me-3" id="reply-input">
 						<div class="reply-button" style="width:120px;">
-							<button type="button" class="btn btn-primary" onclick="saveReply()">댓글 등록</button>
+							<button type="button" class="btn btn-primary" onclick="saveReply('@Model.BoardNo')">댓글 등록</button>
 						</div>
 					</div>
 				</div>
@@ -52,25 +71,5 @@
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
-	<script>
-		function Delete(boardNo) {
-			$.ajax({
-				url: "/board/delete/" + boardNo,
-				type: "Delete",
-				success: function (result) {
-					alert("삭제 되었습니다.");
-					location.href = "/board/Index"
-				},
-				error: function (xhr, status) {
-					if (xhr.status === 401) {
-						location.href = "/User/login"
-					}
-					else 
-					{
-						location.href = "/Error/Error500"
-					}
-				}
-			});
-		}
-	</script>
+	<script src="~/js/boardDetail.js"></script>
 }

@@ -73,7 +73,7 @@ namespace WebApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Replys");
+                    b.ToTable("Replies");
                 });
 
             modelBuilder.Entity("WebApi.Models.Role", b =>

@@ -11,8 +11,8 @@ using WebApi.Models;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20240115191759_Reply")]
-    partial class Reply
+    [Migration("20240116163915_reset")]
+    partial class reset
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,7 +76,7 @@ namespace WebApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Replys");
+                    b.ToTable("Replies");
                 });
 
             modelBuilder.Entity("WebApi.Models.Role", b =>

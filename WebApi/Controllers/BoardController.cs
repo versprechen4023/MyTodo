@@ -61,15 +61,46 @@ namespace WebApi.Controllers
         {
             try
             {
-                var boardDetail = await _dbContext.Boards.FirstOrDefaultAsync(b => b.BoardNo == boardNo);
+                // SELECT b.BoardNo, b.BoardTitle, b.BoardContent, b.BoardDate,
+                // r.ReplyNo, r.ReplyContent,
+                // u.UserName
+                // FROM Boards b JOIN Replys r
+                // (ON b.BoardNo = r.BoardNo)
+                // JOIN Users u
+                // ON r.UserId = u.Id;
 
-                if (boardDetail.BoardCount == null)
+                var boardDetail = await _dbContext.Boards.
+                                        Where(b => b.BoardNo == boardNo).
+                                        Include(b => b.Replies).
+                                            ThenInclude(r => r.User).
+                                        Select(b => new
+                                        {
+                                            b.BoardNo,
+                                            b.BoardTitle,
+                                            b.BoardContent,
+                                            b.BoardDate,
+                                            b.UserId,
+                                            b.User.UserName,
+                                            Replies = b.Replies.Select(r => new
+                                            {
+                                                r.ReplyNo,
+                                                r.ReplyContent,
+                                                r.ReplyDate,
+                                                r.UserId,
+                                                r.User.UserName
+                                            }).ToList()
+                                        }).
+                                        FirstOrDefaultAsync();
+
+				var boardCount = await _dbContext.Boards.FirstOrDefaultAsync(b => b.BoardNo == boardNo);
+
+				if (boardCount.BoardCount == null)
                 {
-                    boardDetail.BoardCount = 1;
+					boardCount.BoardCount = 1;
                 }
                 else
                 {
-                    boardDetail.BoardCount += 1;
+					boardCount.BoardCount += 1;
                 }
 
                 await _dbContext.SaveChangesAsync();

@@ -1,26 +1,48 @@
 using Microsoft.AspNetCore.Mvc;
 using MyTodo.Models;
+using MyTodo.Utils;
 using System.Diagnostics;
 
 namespace MyTodo.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+		// 의존성주입 API사용을 위한 객체, 쿠키접근을 위한 Accessor, 로거
+		private readonly WebAPIs _webAPIs;
+		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(WebAPIs webAPIs, IHttpContextAccessor httpContextAccessor, ILogger<HomeController> logger)
         {
-            _logger = logger;
-        }
+			_webAPIs = webAPIs;
+			_httpContextAccessor = httpContextAccessor;
+			_logger = logger;
+		}
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            try
+            {
+				var token = _httpContextAccessor.HttpContext.Request.Cookies["AccessToken"];
 
-        public IActionResult Privacy()
-        {
-            return View();
+				// 로그인 유무 토큰 검증
+				if (_webAPIs.IsTokenExpired(token))
+				{
+					if (!await _webAPIs.RefreshToken())
+					{
+						TempData["returnURL"] = _httpContextAccessor.HttpContext.Request.Headers["Referer"].ToString();
+
+						return View();
+					}
+				}
+
+				return RedirectToAction("Index", "Todo");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "홈 진입 문제 발생");
+				return RedirectToAction("Error500", "Error");
+			}
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
