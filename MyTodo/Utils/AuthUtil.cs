@@ -59,8 +59,11 @@ namespace MyTodo.Utils
 			{
 				return false;
 			}
+			var tokenDto = new TokenDto();
 
-			var response = await _httpClient.PostAsJsonAsync("/api/auth/refresh", refreshToken);
+			tokenDto.RefreshToken = refreshToken;
+
+			var response = await _httpClient.PostAsJsonAsync("/api/auth/refresh", tokenDto);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -69,13 +72,16 @@ namespace MyTodo.Utils
 
 				_httpContextAccessor.HttpContext.Response.Cookies.Append("AccessToken", token.Token, new CookieOptions
 				{
-					HttpOnly = true,
-					SameSite = SameSiteMode.Strict
+					HttpOnly = true
 				});
 				return true;
+			} else
+			{
+				// 쿠키에 있는 토큰들 다 삭제
+				_httpContextAccessor.HttpContext.Response.Cookies.Delete("AccessToken");
+				_httpContextAccessor.HttpContext.Response.Cookies.Delete("RefreshToken");
+				return false;
 			}
-
-			return false;
 		}
 		public async Task<HttpResponseMessage> GetUserAction()
 		{

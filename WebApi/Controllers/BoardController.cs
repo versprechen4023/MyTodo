@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using WebApi.Dtos;
 using WebApi.LinqExtenstion;
 using WebApi.Models;
 
@@ -88,11 +90,11 @@ namespace WebApi.Controllers
                                                 r.ReplyDate,
                                                 r.UserId,
                                                 r.User.UserName
-                                            }).ToList()
+                                            })
                                         }).
                                         FirstOrDefaultAsync();
 
-				var boardCount = await _dbContext.Boards.FirstOrDefaultAsync(b => b.BoardNo == boardNo);
+                var boardCount = await _dbContext.Boards.FirstOrDefaultAsync(b => b.BoardNo == boardNo);
 
 				if (boardCount.BoardCount == null)
                 {
@@ -186,12 +188,10 @@ namespace WebApi.Controllers
                 board.BoardTitle = model.BoardTitle;
                 board.BoardContent = model.BoardContent;
 
-                if (await _dbContext.SaveChangesAsync() > 0)
-                {
-                    return Ok();
-                }
-
-                return BadRequest();
+                await _dbContext.SaveChangesAsync();
+                
+                return Ok();
+                
             }
             catch (Exception ex)
             {

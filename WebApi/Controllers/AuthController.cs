@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using WebApi.Dtos;
 using WebApi.Models;
 
 namespace WebApi.Controllers
@@ -105,30 +106,39 @@ namespace WebApi.Controllers
             }
         }
 
+		[AllowAnonymous]
 		[HttpPost("refresh")]
-		public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+		public async Task<IActionResult> Refresh(TokenDto model)
 		{
 			_logger.LogWarning("리프레시 토큰 발급 실행");
+
 			try
 			{
-                var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiry > DateTime.UtcNow);
-
-                if(user != null)
+				if (ModelState.IsValid)
                 {
-					string accessToken = GenerateAccessToken(user);
+					var user = await _dbContext.Users.Include(u => u.Role).SingleOrDefaultAsync(u => u.RefreshToken == model.RefreshToken && u.RefreshTokenExpiry > DateTime.UtcNow);
 
-					if (string.IsNullOrEmpty(accessToken) == true)
+					if (user != null)
 					{
-						return BadRequest();
-					}
+						string accessToken = GenerateAccessToken(user);
 
-					return Ok(new { Token = accessToken });
-                }
-                else
+						if (string.IsNullOrEmpty(accessToken) == true)
+						{
+							return BadRequest();
+						}
+
+						return Ok(new { Token = accessToken });
+					}
+					else
+					{
+						// 로그인 정보 불일치시
+						return BadRequest(new { message = "인증 오류" });
+					}
+				} else
                 {
-                    // 로그인 정보 불일치시
-                    return BadRequest();
-                }
+					return BadRequest(new { message = "모델 오류" });
+				}
+					
 			}
 			catch (Exception ex)
 			{
@@ -162,9 +172,9 @@ namespace WebApi.Controllers
                             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                     }),
 
-                    // 토큰 유효시간은 1시간
-                    Expires = DateTime.UtcNow.AddHours(1),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+					// 토큰 유효시간은 1시간
+					Expires = DateTime.UtcNow.AddHours(1),
+				    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                     Issuer = _configuration["JwtSettings:Issuer"],
                     Audience = _configuration["JwtSettings:Audience"]
                 };

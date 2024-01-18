@@ -115,14 +115,10 @@ namespace WebApi.Controllers
                     todo.TodoStatus = model.TodoStatus;
                 }
 
-                if (await _dbContext.SaveChangesAsync() > 0)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                await _dbContext.SaveChangesAsync();
+
+                return Ok();
+
             }
             catch (Exception ex)
             {

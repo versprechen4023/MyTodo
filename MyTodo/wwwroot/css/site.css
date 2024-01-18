@@ -2,9 +2,17 @@ html {
   font-size: 14px;
 }
 
+::placeholder {
+    font-size: 12px;
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
+  }
+
+  ::placeholder {
+      font-size: 18px;
   }
 }
 
@@ -34,8 +42,9 @@ img {
 
 .todo-button{
     margin-left:20px;
-    width:150px;
+    min-width:120px;
 }
 #todo-card {
     height: 700px;
 }
+

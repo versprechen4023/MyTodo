@@ -46,24 +46,23 @@ namespace MyTodo.Controllers
                     // 쿠키에 토큰 저장
                     Response.Cookies.Append("AccessToken", token.Token, new CookieOptions
                     {
-                        HttpOnly = true,
-                        SameSite = SameSiteMode.Strict
+                        HttpOnly = true
                     });
 
-                    Response.Cookies.Append("RefreshToken", token.Token, new CookieOptions
+                    Response.Cookies.Append("RefreshToken", token.RefreshToken, new CookieOptions
                     {
-                        HttpOnly = true,
-                        SameSite = SameSiteMode.Strict
+                        HttpOnly = true
                     });
 
                     if (string.IsNullOrEmpty(returnURL))
-                    {
-                        return RedirectToAction("Index", "Home");
+
+					{
+                        return RedirectToAction("Index", "Todo");
                     }
                     else
                     {
-                        return Redirect(returnURL);
-                    }
+						return Redirect(returnURL);
+					}
                 }
                 else
                 {

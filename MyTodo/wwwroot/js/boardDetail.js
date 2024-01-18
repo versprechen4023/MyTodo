@@ -59,13 +59,12 @@ function deleteReply(replyNo) {
 			location.reload();
 		},
 		error: function (xhr, status) {
-			console.log(xhr.status);
-			// if (xhr.status === 401) {
-			// 	location.href = "/User/login"
-			// }
-			// else {
-			// 	location.href = "/Error/Error500"
-			// }
+			 if (xhr.status === 401) {
+			 	location.href = "/User/login"
+			 }
+			 else {
+			 	location.href = "/Error/Error500"
+			 }
 		}
 	})
 }
